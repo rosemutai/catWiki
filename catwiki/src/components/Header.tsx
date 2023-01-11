@@ -3,84 +3,57 @@ import axios from 'axios'
 import { Cat } from '../interfaces/cat-interface'
 
 import catImage from '../images/CatwikiLogo.svg'
+import BreedDetails from './BreedDetails'
 
 type BreedProps = {
     data: Cat[]
 }
 
-const Header = ({ data}: BreedProps) => {
+type CatProps = {
+  catBreed: Cat
+}
 
-    const inputSearchRef = useRef<HTMLInputElement>(null)
+
+
+const API_KEY = 'YCa8tb/mF7pU3yBPcezkgQ==UF4eQaRRWs93WBkH'
+axios.defaults.headers.common['X-Api-Key'] = API_KEY
+
+const Header = ({ data}:BreedProps) => {
+
     const [searchedValue, setSearchedValue] = useState('')
-    const [suggestions, setSuggestions] = useState<Cat[]>([])
-    const [selectedSuggestion, setSelectedSuggestion] = useState("")
-    const [allBreeds, setAllBreeds] = useState<string[]>([])
-    const [activeSuggestion, setActiveSuggestion] = useState(0)
+    const [searchedBreed, setSearchedBreed] = useState<Cat | null>(null)
 
-    useEffect(() => {
-        if (inputSearchRef.current) {
-            inputSearchRef.current.focus()
-        }
-    }, [])
-
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) : void =>{
-        if(event.target.value !== ''){
-            const filteredSuggestions = data.filter((itemData) => {
-                const value = event.target.value.toLowerCase()
-                const name = itemData.name.toLowerCase()
-
-                return value && name.startsWith(value) && name !== value
-            })
-            setSearchedValue(event.target.value)
-            setSuggestions(filteredSuggestions)
-        }
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+        setSearchedValue(event.target.value)
     }
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-        if(event.key === 'ArrowDown' && activeSuggestion < suggestions.length){
-            setActiveSuggestion(activeSuggestion + 1)
-        }else if(event.key === 'ArrowUp' && activeSuggestion > suggestions.length){
-            setActiveSuggestion(activeSuggestion - 1)
-        }else if(event.key === 'Enter'){
-            setSearchedValue(suggestions[activeSuggestion - 1].name)
-            setSelectedSuggestion(suggestions[activeSuggestion - 1].name)
-            setSuggestions([])
-            setActiveSuggestion(0)
+    const fetchSearchedValue = async() => {
+       
+        try {
+
+            const res = await axios.get(`https://api.api-ninjas.com/v1/cats?name=${searchedValue}`)
+            const data = res.data
+            console.log(data)
+            setSearchedBreed(data)
+            console.log(searchedBreed)
+            setSearchedValue('')
+            
+        } catch (error) {
+            console.log(error)
         }
+    } 
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>)=>{
+        e.preventDefault()
+        fetchSearchedValue()
     }
 
-    const handleClick = (value: string) => {
-        setSelectedSuggestion(value)
-        setSearchedValue(value)
-        setSuggestions([])
-        setActiveSuggestion(0)
-    
-    }
+    useEffect(()=>{
+        fetchSearchedValue()
 
- 
-    const API_KEY = 'live_XfAiOo58GwKnnNLeHCHjQemCTHAoIF0eeNSqeqMNtErSrB84NCeUeRUo79pPj0ro'
-    axios.defaults.headers.common['x-api-key'] = API_KEY
-
+    },[])
     
 
     
-
-    const displayAllBreeds = async () =>{
-    try {
-
-        const response = await axios.get('https://api.thecatapi.com/v1/breeds')
-        const data = await response.data
-        setAllBreeds(data)
-        console.log(data)
-        
-      } catch (error) {
-        console.log(error)
-      }
-    
-   }
-
-   
 
   return (
     <div className='header w-full rounded-t-2xl bg-hero h-48 md:h-96 bg-cover bg-center bg-no-repeat
@@ -94,16 +67,14 @@ const Header = ({ data}: BreedProps) => {
         </div>
 
         <div className='form-section'>
-            <div className='relative mt-4 md:mt-8'>
+            <form onSubmit={handleFormSubmit} className='relative mt-4 md:mt-8'>
                 <input className='bg-white rounded-[59px] w-32 md:w-60 placeholder:text-brownish placeholder:ml-2 
                     placeholder:text-sm px-3 p-1 md:px-4 md:py-2 focus:outline-0'
                     type='text' placeholder='search'
                     value={searchedValue}
                     onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    ref={inputSearchRef}
                 />
-                <button  className="search-icon" >
+                <button type='submit' className="search-icon" >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         strokeWidth="1.5" stroke="currentColor" className="md:w-6 w-4 h-4 md:h-6 absolute text-brownish
                         top-2 left-24 md:left-52 z-50 ">
@@ -112,19 +83,23 @@ const Header = ({ data}: BreedProps) => {
                     </svg>
 
                 </button>
-                <div className='searched-items'>
-                    {/* {allBreeds && allBreeds.filter((onebreed) => {
-                        return(
-                            onebreed.includes(searchParam) 
-                            
-                        )}
-                       
 
-                    )} */}
-                </div>
-
-            </div>
+            </form>
         </div>
+
+        {searchedBreed &&
+            <div className='searched-breed-result rounded-md bg-red-400 w-2/5 absolute inset-2/4'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" 
+                    stroke="currentColor" className="w-6 h-6 text-brownish">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+
+                <BreedDetails catBreed={searchedBreed}/>
+            </div>
+        }
+        
+
+     
     </div>
   )
 }
