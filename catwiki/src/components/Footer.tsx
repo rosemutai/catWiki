@@ -10,7 +10,7 @@ const Footer = () => {
         </div>
 
         <div className="username md:ml-auto">
-            <p className='text-white text-xs md:text-sm '>&#169; created by rosemutai - devChallenge.io 2023</p>
+            <p className='text-white text-xs md:text-sm '>&#169; kitty.com devchallenges-design</p>
         </div>
     </div>
   )
