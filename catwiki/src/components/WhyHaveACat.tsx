@@ -21,12 +21,14 @@ const WhyHaveACat = () => {
             </p>
 
             <div>
-                <button className='text-brownish/60 font-semibold text-sm flex justify-between my-4'>READ MORE
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" className="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                    </svg>
-                </button>
+                <a href='https://en.wikipedia.org/wiki/Cat' className='hover:text-md hover:text-brownish
+                       hover:border-b-brownish  hover:transition-all 
+                     text-brownish/60 font-semibold text-sm flex justify-between my-4'>READ MORE
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                        stroke="currentColor" className="w-4 h-4 mb-1 md:mb-0 md:w-6 md:h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                </svg>
+                </a>
             </div>
         </div>
         <div className="right w-11/12 md:w-1/2 flex flex-wrap">
