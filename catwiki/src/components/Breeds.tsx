@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
+
 import { Cat } from '../interfaces/cat-interface'
 
 type BreedsProps = {
    data: Cat[]
 }
 
-
-
 const Breeds = ({data}:BreedsProps) => {
-
-    const API_KEY = 'YCa8tb/mF7pU3yBPcezkgQ==UF4eQaRRWs93WBkH'
+    
+    const API_KEY = process.env.API_KEY
     axios.defaults.headers.common['X-Api-Key'] = API_KEY
-
   
     const [breeds, setBreeds] = useState<Cat[]>([])
     const displayAllBreeds = async () =>{
@@ -23,7 +22,6 @@ const Breeds = ({data}:BreedsProps) => {
             const response = await axios.get('https://api.api-ninjas.com/v1/cats?family_friendly=5')
             const data = await response.data
             setBreeds(data)
-            console.log(data)
             
         } catch (error) {
             console.log(error)
@@ -38,13 +36,13 @@ const Breeds = ({data}:BreedsProps) => {
 
   return (
     <div className='breeds w-full rounded-b-2xl h-[40rem] md:h-[32rem]  bg-light-grey px-8 md:px-16'>
-        <h3 className="title text-brownish font-medium text-sm md:text-lg pt-6">The Most Friendly Breeds</h3>
+        <h3 className="title text-brownish font-medium text-sm md:text-lg pt-16">The Most Friendly Breeds</h3>
         <hr className='border-b-brownish w-8 border-2 border-t-light-grey border-x-light-grey
             md:-mt-1 md:mb-3'/>
         
         <div className="66+ btn md:flex md:justify-between">
-            <h2 className='discover-breeds-title text-brownish text-xl md:text-3xl font-extrabold md:my-0 my-10  md:w-72'>
-                 Discover 50+ Cat Breeds
+            <h2 className='discover-breeds-title text-brownish text-xl md:text-2xl font-extrabold md:my-0 my-10  md:w-72'>
+                 Get to know more about cat Breeds here
             </h2>
             <div className='btn'>
                 <a href='https://en.wikipedia.org/wiki/Cat' className='hover:text-md hover:text-brownish
@@ -61,20 +59,19 @@ const Breeds = ({data}:BreedsProps) => {
         </div>
         
         <div className="cards-section flex justify-between flex-wrap md:flex-nowrap mdw-10/12 md:mt-4 mx-auto">
-            {breeds  && breeds.map((breed, index) => {
-                if(index < 4){
+            {breeds  && breeds.slice(0, 4).map((breed, index) => {
+                // if(index < 4){
                 return(
                      <div key={breed.name} className="card w-32 h-32 md:w-56 md:h-56 mb-16 md:mb-0 md:mr-2">
-                        <img src={breed.image_link} className='w-full' alt="" />
+                        <Link to='/breed-details'>
+                            <img src={breed.image_link} className='w-full' alt={breed.name} />
+                        </Link>
+                        
                         <h4 className='cat-name text-brownish text-sm font-semibold  text-center'>{breed.name}</h4>
                     </div>
-                )}
+                )
+            // }
                 })}
-           
-
-            
-
-           
 
         </div>
     </div>
