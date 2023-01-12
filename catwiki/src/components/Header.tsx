@@ -15,13 +15,15 @@ type CatProps = {
 
 
 
-const API_KEY = 'YCa8tb/mF7pU3yBPcezkgQ==UF4eQaRRWs93WBkH'
+const API_KEY = process.env.API_KEY
 axios.defaults.headers.common['X-Api-Key'] = API_KEY
+const baseurl = "https://api.api-ninjas.com/v1/cats";
 
 const Header = ({ data}:BreedProps) => {
 
     const [searchedValue, setSearchedValue] = useState('')
     const [searchedBreed, setSearchedBreed] = useState<Cat | null>(null)
+    const [open, setOpen] = useState(false)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
         setSearchedValue(event.target.value)
@@ -31,11 +33,10 @@ const Header = ({ data}:BreedProps) => {
        
         try {
 
-            const res = await axios.get(`https://api.api-ninjas.com/v1/cats?name=${searchedValue}`)
+            const res = await axios.get(`${baseurl}?name=${searchedValue}`)
             const data = res.data
-            console.log(data)
-            setSearchedBreed(data)
-            console.log(searchedBreed)
+            setSearchedBreed(data[0])
+            setOpen(true)
             setSearchedValue('')
             
         } catch (error) {
@@ -53,7 +54,10 @@ const Header = ({ data}:BreedProps) => {
     },[])
     
 
-    
+    const closeModal = (e: React.MouseEvent) =>{
+        setOpen(false)
+       
+    }
 
   return (
     <div className='header w-full rounded-t-2xl bg-hero h-48 md:h-96 bg-cover bg-center bg-no-repeat
@@ -63,7 +67,8 @@ const Header = ({ data}:BreedProps) => {
         </div>
 
         <div className='more-about-cat w-40 md:w-56 mt-3'>
-            <h3 className='more text-xs md:text-sm text-white font-medium leading-4'>Get to know more about your cat breed</h3>
+            <h3 className='more text-xs md:text-sm text-white font-medium leading-4'>
+                Get to know more about your cat breed. 1 indicates the minimum value while 5 is the maximum.</h3>
         </div>
 
         <div className='form-section'>
@@ -88,11 +93,18 @@ const Header = ({ data}:BreedProps) => {
         </div>
 
         {searchedBreed &&
-            <div className='searched-breed-result rounded-md bg-red-400 w-2/5 absolute inset-2/4'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" 
-                    stroke="currentColor" className="w-6 h-6 text-brownish">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <div
+             
+              className={`${open ? 'searched-breed-result rounded-md  w-2/5 absolute inset-y-1/4 inset-x-2/4' : 'opacity-0 hidden'}`}
+              onClick={closeModal}>
+              
+                <button className= 'absolute top-1 right-2'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" 
+                        stroke="currentColor" className="w-6 h-6 text-brownish hover:bg-brownish hover:text-light-grey
+                            hover:rounded-full">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
 
                 <BreedDetails catBreed={searchedBreed}/>
             </div>
