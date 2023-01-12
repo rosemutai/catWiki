@@ -10,7 +10,7 @@ module.exports = {
         'light-grey': '#E3E1DC'
       },
       backgroundImage: {
-        'hero': 'url("../public/images/HeroImagelg.png")'
+        'hero': 'url("../public/images/kitty.jpg")'
       },
       spacing: {
         '128': '96%',
