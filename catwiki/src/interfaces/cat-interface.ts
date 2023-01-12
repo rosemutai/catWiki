@@ -1,10 +1,19 @@
 export type Cat = {
     name: string,
-    cfa_url: string,
-    vcahospitals_url: string,
-    temperament: string[],
+    length: string,
     origin: string,
-    description: string,
-    life_span: string,
-    wikipedia_url: string
+    image_link: string,
+    family_friendly: number,
+    shedding: number,
+    general_health: number,
+    playfulness: number,
+    children_friendly: number,
+    grooming: number,
+    intelligence: number,
+    other_pets_friendly: number,
+    min_weight: number,
+    max_weight: number,
+    min_life_expectancy: number,
+    max_life_expectancy: number
+    
 }
